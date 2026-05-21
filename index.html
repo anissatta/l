@@ -28,6 +28,16 @@ a {
         <section>
             <div class="menu">
                 <p class="menu-label">
+                    About the program which I made 
+                </p>
+                <ul class="menu-list">
+                    <li>
+                        <a href="#colab">
+                            Some codes which you can test on Google Colab 
+                        </a>
+                    </li>
+                </ul>
+                <p class="menu-label">
                     Kim Keon-Hee 
                 </p>
                 <ul class="menu-list">
@@ -58,6 +68,349 @@ a {
         <section>
             <div class="container">
                 <div class="content">
+
+                    <h3 class="title is-3" id="colab">
+                        Some codes which you can test on Google Colab 
+                    </h3>
+                    <p>
+                        Google Colab: <a href="https://colab.new" target="_blank" rel="noopener noreferrer">https://colab.new</a> 
+                    </p>
+                    <p>
+                        <button class="button cb-btn" 
+                                data-clipboard-target="#may14-code3" 
+                                onclick="alert('Copied!');">
+                            Copy 
+                        </button>
+                    </p>
+                    <div style="overflow-x: auto;">
+                        <pre id="may14-code3">
+!pip install feedparser janome googletrans==4.0.0-rc1 bs4 qrcode 
+import time
+import random
+from IPython.display import HTML, Image, display
+import feedparser
+from janome.tokenizer import Tokenizer
+from googletrans import Translator
+import requests
+from bs4 import BeautifulSoup
+import qrcode
+
+feed_urls = [
+    "https://news.yahoo.co.jp/rss/categories/domestic.xml",
+    "https://news.yahoo.co.jp/rss/categories/world.xml",
+    "https://news.yahoo.co.jp/rss/categories/business.xml",
+    "https://news.yahoo.co.jp/rss/categories/entertainment.xml",
+    "https://news.yahoo.co.jp/rss/categories/sports.xml",
+    "https://news.yahoo.co.jp/rss/categories/it.xml",
+    "https://news.yahoo.co.jp/rss/categories/science.xml",
+    "https://news.yahoo.co.jp/rss/categories/life.xml",
+    "https://news.yahoo.co.jp/rss/categories/local.xml",
+    "https://www.asahi.com/rss/asahi/newsheadlines.rdf",
+    "https://www.asahi.com/rss/asahi/international.rdf",
+    "https://business.nikkei.com/rss/sns/nb.rdf",
+    "https://news.ntv.co.jp/rss/index.rdf",
+    "https://news.web.nhk/n-data/conf/na/rss/cat0.xml"
+]
+jtokenizer = Tokenizer()
+trans = Translator()
+
+def printArticleFormatted(title): 
+    try: 
+        line = '&lt;h3&gt;'
+        i = 1
+        for tok in jtokenizer.tokenize(title):  
+            if (i % 2 == 0): 
+                line += '&lt;ruby style="font-family: serif; color: #f7c111;"&gt;' + tok.surface
+            else: 
+                line += '&lt;ruby style="font-family: sans-serif; color: #0c0c0c;"&gt;' + tok.surface
+            if (tok.part_of_speech.split(',')[0] == '名詞'): 
+                translated = trans.translate(tok.base_form, dest='en').text
+                line += '&lt;rt&gt;' + translated + '&lt;/rt&gt;'
+            line += '&lt;/ruby&gt;'
+            i += 1
+        line += '&lt;/h3&gt;'
+        display(HTML(line))
+    except Exception as e: 
+        print('Error in printArticleFormatted: ' + str(e))
+
+def printTranslateds(text): 
+    try: 
+        print(trans.translate(text, dest='ko').text)
+        print(trans.translate(text, dest='zh-TW').text)
+        print(trans.translate(text, dest='en').text)
+    except Exception as e: 
+        print('Error in printTranslateds: ' + str(e))
+
+def printArticleImage(url): 
+    try: 
+        line = ''
+        res = requests.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        tags = soup.select("[property='og:image']")
+        if (len(tags) > 0): 
+            imgurl = tags[0].get('content')
+        else: 
+            imgurl = '#'
+        line += '&lt;figure&gt;'
+        line += '&lt;img style="max-width: 200px;" src="' + imgurl + '" /&gt;'
+        line += '&lt;/figure&gt;'
+        display(HTML(line))
+    except Exception as e: 
+        print('Error in printArticleImage: ' + str(e))
+
+def printQR(url): 
+    try: 
+        img_dest = 'temp.png'
+        img = qrcode.make(url)
+        img.save(img_dest)
+        display(Image(filename=img_dest))
+    except Exception as e: 
+        print('Error in printQR: ' + str(e))
+
+def printLatestArticleOfMyBlog(): 
+    try: 
+        feed_url = "https://mycatiskorean.blogspot.com//feeds/posts/default"
+        f = feedparser.parse(feed_url)
+        entry = f.entries[0] 
+        print(entry.title)
+        print(entry.link)
+    except Exception as e: 
+        print('Error in printLatestArticleOfMyBlog: ' + str(e))
+
+while True: 
+    try: 
+        title = 'n/a'
+        url = 'n/a'
+        random.shuffle(feed_urls)
+        for furl in feed_urls: 
+            feed = feedparser.parse(furl)
+            if (len(feed.entries) == 0): 
+                pass
+            else: 
+                entry = feed.entries[random.randint(0, len(feed.entries)-1)]
+                title = entry.title
+                url = entry.link
+                break
+        printArticleImage(url)
+        printArticleFormatted(title)
+        printQR(url)
+        printTranslateds(title)
+        print(url)
+        printLatestArticleOfMyBlog()
+    except Exception as e: 
+        print('Error in main loop: ' + str(e))
+    time.sleep(3)
+                        </pre>
+                    </div>
+                    <p>
+                        <button class="button cb-btn" 
+                                data-clipboard-target="#may15-code1" 
+                                onclick="alert('Copied!');">
+                            Copy 
+                        </button>
+                    </p>
+                    <div style="overflow-x: auto;">
+                        <pre id="may15-code1">
+!pip install feedparser kiwipiepy googletrans==4.0.0-rc1 bs4 qrcode 
+import time
+import random
+from IPython.display import HTML, Image, display
+import feedparser
+from kiwipiepy import Kiwi
+from googletrans import Translator
+import requests
+from bs4 import BeautifulSoup
+import qrcode
+
+feed_urls = [
+    "https://www.yna.co.kr/rss/news.xml",
+    "https://www.newsis.com/RSS/sokbo.xml",
+    "https://www.newsis.com/RSS/square.xml",
+    "https://www.newsis.com/RSS/entertain.xml",
+    "https://www.newsis.com/RSS/photo.xml",
+    "https://news-ex.jtbc.co.kr/v1/get/rss/newsflesh",
+    "https://news.sbs.co.kr/news/newsflashRssFeed.do?plink=RSSREADER"
+]
+ktokenizer = Kiwi()
+trans = Translator()
+
+def printArticleFormatted(title): 
+    try: 
+        line = '&lt;h3&gt;'
+        i = 1
+        for tok in ktokenizer.tokenize(title):  
+            if (i % 2 == 0): 
+                line += '&lt;ruby style="font-family: serif; color: #f7c111;"&gt;' + tok.form
+            else: 
+                line += '&lt;ruby style="font-family: sans-serif; color: #0c0c0c;"&gt;' + tok.form
+            if tok.tag == 'NNG' or \
+               tok.tag == 'NNP' or \
+               tok.tag == 'NNB': 
+                translated = trans.translate(tok.form, dest='en').text
+                line += '&lt;rt&gt;' + translated + '&lt;/rt&gt;'
+            line += '&lt;/ruby&gt;'
+            i += 1
+        line += '&lt;/h3&gt;'
+        display(HTML(line))
+    except Exception as e: 
+        print('Error in printArticleFormatted: ' + str(e))
+
+def printTranslateds(text): 
+    try: 
+        print(trans.translate(text, dest='en').text)
+        print(trans.translate(text, dest='zh-TW').text)
+        print(trans.translate(text, dest='ja').text)
+    except Exception as e: 
+        print('Error in printTranslateds: ' + str(e))
+
+def printArticleImage(url): 
+    try: 
+        line = ''
+        res = requests.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        tags = soup.select("[property='og:image']")
+        if (len(tags) > 0): 
+            imgurl = tags[0].get('content')
+        else: 
+            imgurl = '#'
+        line += '&lt;figure&gt;'
+        line += '&lt;img style="max-width: 200px;" src="' + imgurl + '" /&gt;'
+        line += '&lt;/figure&gt;'
+        display(HTML(line))
+    except Exception as e: 
+        print('Error in printArticleImage: ' + str(e))
+
+def printQR(url): 
+    try: 
+        img_dest = 'temp.png'
+        img = qrcode.make(url)
+        img.save(img_dest)
+        display(Image(filename=img_dest))
+    except Exception as e: 
+        print('Error in printQR: ' + str(e))
+
+def printLatestArticleOfMyBlog(): 
+    try: 
+        feed_url = "https://mycatiskorean.blogspot.com//feeds/posts/default"
+        f = feedparser.parse(feed_url)
+        entry = f.entries[0] 
+        print(entry.title)
+        print(entry.link)
+    except Exception as e: 
+        print('Error in printLatestArticleOfMyBlog: ' + str(e))
+
+while True: 
+    try: 
+        title = 'n/a'
+        url = 'n/a'
+        random.shuffle(feed_urls)
+        for furl in feed_urls: 
+            feed = feedparser.parse(furl)
+            if (len(feed.entries) == 0): 
+                pass
+            else: 
+                entry = feed.entries[random.randint(0, len(feed.entries)-1)]
+                title = entry.title
+                url = entry.link
+                break
+        printArticleImage(url)
+        print(title)
+        printArticleFormatted(title)
+        printQR(url)
+        printTranslateds(title)
+        print(url)
+        printLatestArticleOfMyBlog()
+    except Exception as e: 
+        print('Error in main loop: ' + str(e))
+    time.sleep(3)
+                        </pre>
+                    </div>
+                    <p>
+                        <button class="button cb-btn" 
+                                data-clipboard-target="#may16-code1" 
+                                onclick="alert('Copied!');">
+                            Copy 
+                        </button>
+                    </p>
+                    <div style="overflow-x: auto;">
+                        <pre id="may16-code1">
+!pip install googletrans==4.0.0-rc1 bs4 qrcode 
+import time
+import random
+from IPython.display import HTML, Image, display
+from googletrans import Translator
+import requests
+from bs4 import BeautifulSoup
+import qrcode
+
+trans = Translator()
+
+def getRandomRecipeURL(): 
+    try: 
+        # select a random list which contains some links to articles. 
+        list_url = 'https://www.10000recipe.com/recipe/list.html?order=date&page='
+        page = random.randint(2, 777)
+        res = requests.get(list_url + str(page))
+        soup = BeautifulSoup(res.text, 'html.parser')
+        # now pick one of the links. 
+        tags = soup.select("[class='common_sp_link']")
+        randtag = tags[random.randint(0, len(tags) - 1)]
+        return 'https://www.10000recipe.com' + randtag.get('href')
+    except Exception as e: 
+        print('Error in getRandomRecipeURL: ' + str(e))
+        return ''
+
+def printArticleImage(url): 
+    try: 
+        line = ''
+        res = requests.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        tags = soup.select("[property='og:image']")
+        if (len(tags) > 0): 
+            imgurl = tags[0].get('content')
+        else: 
+            imgurl = '#'
+        line += '&lt;figure&gt;'
+        line += '&lt;img style="max-width: 200px;" src="' + imgurl + '" /&gt;'
+        line += '&lt;/figure&gt;'
+        display(HTML(line))
+    except Exception as e: 
+        print('Error in printArticleImage: ' + str(e))
+
+def printQR(url): 
+    try: 
+        img_dest = 'temp.png'
+        img = qrcode.make(url)
+        img.save(img_dest)
+        display(Image(filename=img_dest))
+    except Exception as e: 
+        print('Error in printQR: ' + str(e))
+
+def printTitles(url): 
+    try: 
+        res = requests.get(url)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        tags = soup.select("title")
+        title = tags[0].get_text()
+        print(title)
+        print(trans.translate(title, dest='en').text)
+        print(trans.translate(title, dest='zh-TW').text)
+        print(trans.translate(title, dest='ja').text)
+    except Exception as e: 
+        print('Error in printTitles: ' + str(e))
+
+while True: 
+    try: 
+        url = getRandomRecipeURL()
+        print(url)
+        printQR(url)
+        printTitles(url)
+        printArticleImage(url)
+    except Exception as e: 
+        print('Error in main loop: ' + str(e))
+    time.sleep(3)
+                        </pre>
+                    </div>
 
                     <h3 class="title is-3" id="kimtrial">
                         Wiki articles for Kim Keon-Hee's criminal trials 
