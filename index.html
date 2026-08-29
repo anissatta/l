@@ -14,6 +14,20 @@
 a {
     word-break: break-word;
 }
+#trump-harp {
+    animation: opt 3s infinite;
+}
+@keyframes opt {
+    0% {
+        filter: blur(2px);
+    }
+    50% {
+        filter: blur(0);
+    }
+    100% {
+        filter: blur(2px);
+    }
+}
 -->
         </style>
     </head>
@@ -32,7 +46,7 @@ a {
                 <div class="content">
 
 <figure class="image">
-    <img alt="harp" src="img/harp.gif" />
+    <img id="trump-harp" alt="harp" src="img/harp.gif" />
 </figure>
 
 <p class="notification is-light">
